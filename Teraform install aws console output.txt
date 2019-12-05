@@ -1,0 +1,47 @@
+Terraform installation on Ubuntu aws instance
+********************************************************************
+
+root@ip-172-31-37-87:/home/ubuntu# sudo apt-get install unzip
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+Suggested packages:
+  zip
+The following NEW packages will be installed:
+  unzip
+0 upgraded, 1 newly installed, 0 to remove and 54 not upgraded.
+Need to get 167 kB of archives.
+After this operation, 558 kB of additional disk space will be used.
+Get:1 http://us-east-1.ec2.archive.ubuntu.com/ubuntu bionic/main amd64 unzip amd64 6.0-21ubuntu1 [167 kB]
+Fetched 167 kB in 0s (7885 kB/s)
+Selecting previously unselected package unzip.
+(Reading database ... 60632 files and directories currently installed.)
+Preparing to unpack .../unzip_6.0-21ubuntu1_amd64.deb ...
+Unpacking unzip (6.0-21ubuntu1) ...
+Setting up unzip (6.0-21ubuntu1) ...
+Processing triggers for mime-support (3.60ubuntu1) ...
+Processing triggers for man-db (2.8.3-2ubuntu0.1) ...
+root@ip-172-31-37-87:/home/ubuntu# https://www.terraform.io/downloads.html
+bash: https://www.terraform.io/downloads.html: No such file or directory
+root@ip-172-31-37-87:/home/ubuntu# wget https://releases.hashicorp.com/terraform/0.12.7/terraform_0.12.7_linux_amd64.zip
+--2019-12-05 11:22:19--  https://releases.hashicorp.com/terraform/0.12.7/terraform_0.12.7_linux_amd64.zip
+Resolving releases.hashicorp.com (releases.hashicorp.com)... 151.101.249.183, 2a04:4e42:3b::439
+Connecting to releases.hashicorp.com (releases.hashicorp.com)|151.101.249.183|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 15931476 (15M) [application/zip]
+Saving to: ‘terraform_0.12.7_linux_amd64.zip’
+
+terraform_0.12.7_linux_amd64.zip           100%[========================================================================================>]  15.19M  51.3MB/s    in 0.3s
+
+2019-12-05 11:22:19 (51.3 MB/s) - ‘terraform_0.12.7_linux_amd64.zip’ saved [15931476/15931476]
+
+root@ip-172-31-37-87:/home/ubuntu# unzip terraform_0.12.7_linux_amd64.zip
+Archive:  terraform_0.12.7_linux_amd64.zip
+  inflating: terraform
+root@ip-172-31-37-87:/home/ubuntu# sudo mv terraform /usr/local/bin/
+root@ip-172-31-37-87:/home/ubuntu# terraform --version
+Terraform v0.12.7
+
+
+
+Ref:  https://askubuntu.com/questions/983351/how-to-install-terraform-in-ubuntu
