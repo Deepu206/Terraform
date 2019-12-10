@@ -21,9 +21,9 @@ image_name = ghost:alpine
 ext_port = 8080
 Output the plan to a file called tfplan.
 
-Then apply the plan using tfplan and make sure that the apply doesn’t prompt for input.
+Then apply the plan using tfplan and make sure that the apply doesnâ€™t prompt for input.
 
-http://54.211.152.208/     ----->we can able to see ghost application.
+
 ***********************************************************************************************************************************
  -->cat main.tf
 
@@ -70,7 +70,7 @@ ghost                                   alpine              7a562dfa21a3        
 ->docker ps -a
 	ubuntu@ip-172-31-43-168:~$ docker ps -a
 CONTAINER ID        IMAGE                                         COMMAND                  CREATED             STATUS                     PORTS                            NAMES
-5a9b54503e8b        7a562dfa21a3                                  "docker-entrypoint.s…"   10 seconds ago      Up 8 seconds               0.0.0.0:8089->2368/tcp           ghost_blogss
+5a9b54503e8b        7a562dfa21a3                                  "docker-entrypoint.sâ€¦"   10 seconds ago      Up 8 seconds               0.0.0.0:8089->2368/tcp           ghost_blogss
 
 ->curl localhost:8089
 
