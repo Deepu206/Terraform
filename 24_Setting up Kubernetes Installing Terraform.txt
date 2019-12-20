@@ -1,0 +1,87 @@
+Setting up Kubernetes Installing Terraform
+In this lesson we will setup a Kuberentes master and install Terraform.
+
+Add the following to kube-config.yml:
+
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: ClusterConfiguration
+kubernetesVersion: "v1.13.5"
+networking:
+  podSubnet: 10.244.0.0/16
+apiServer:
+  extraArgs:
+    service-node-port-range: 8000-31274
+	
+Initialize Kubernetes:
+
+sudo kubeadm init --config kube-config.yml
+
+Copy admin.conf to your home directory:
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+Install Flannel:
+
+sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+Untaint the Kubernetes Master:
+
+kubectl taint nodes --all node-role.kubernetes.io/master-
+Install Terraform
+Terraform will be installed on the Swarm manager.
+
+Install Terraform 0.11.13:
+
+sudo curl -O https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip
+sudo unzip terraform_0.11.13_linux_amd64.zip -d /usr/local/bin/
+Test the Terraform installation:
+
+terraform version
+
+Download Terraform (https://www.terraform.io/downloads.html)
+
+****************************************************************************************************************************
+Your Interactive Bash Terminal.
+
+->launch.sh //launching terminal
+
+master $ launch.sh
+Waiting for Kubernetes to start...
+Kubernetes started
+
+->kubectl cluster-info //getting cluster info
+
+master $ kubectl cluster-info
+Kubernetes master is running at https://172.17.0.10:6443
+KubeDNS is running at https://172.17.0.10:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+->kubectl get nodes //get nodes
+
+master $ kubectl get nodes
+NAME     STATUS   ROLES    AGE   VERSION
+master   Ready    master   45m   v1.14.0
+node01   Ready    <none>   44m   v1.14.0
+
+- >present working directry is root
+
+master $ pwd
+/root
+
+->curl -O https://releases.hashicorp.com/terraform/0.12.18/terraform_0.12.18_linux_amd64.zip //downloading terraform
+
+master $ curl -O https://releases.hashicorp.com/terraform/0.12.18/terraform_0.12.18_linux_amd64.zip
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 15.7M  100 15.7M    0     0  23.4M      0 --:--:-- --:--:-- --:--:-- 23.4M
+
+->unzip terraform_0.12.18_linux_amd64.zip -d /usr/local/bin/  //unzip the terraform
+master $ unzip terraform_0.12.18_linux_amd64.zip -d /usr/local/bin/
+Archive:  terraform_0.12.18_linux_amd64.zip
+  inflating: /usr/local/bin/terraform
+
+->terraform version //terraform version
+
+master $ terraform version
+Terraform v0.12.18
