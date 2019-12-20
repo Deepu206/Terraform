@@ -81,3 +81,539 @@ kubectl delete pod [POD_ID]
 Reset the environment:
 
 terraform destroy -auto-approve
+
+
+******************************************************************************************************************************
+master $ mkdir -p ~/terraform/deployment
+master $ ls
+main.tf  terraform.tfstate  terraform.tfstate.backup  versions.tf
+master $ pwd
+/root/terraform/service
+master $ cd ~/terraform/deployment
+master $ pwd
+/root/terraform/deployment
+master $ vi main.tf
+master $ terraform init
+
+Initializing the backend...
+
+Initializing provider plugins...
+- Checking for available provider plugins...
+- Downloading plugin for provider "kubernetes" (hashicorp/kubernetes) 1.10.0...
+
+The following providers do not have any version constraints in configuration,
+so the latest version was installed.
+
+To prevent automatic upgrades to new major versions that may contain breaking
+changes, it is recommended to add version = "..." constraints to the
+corresponding provider blocks in configuration, with the constraint strings
+suggested below.
+
+* provider.kubernetes: version = "~> 1.10"
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+master $ terraform validate
+
+Warning: Interpolation-only expressions are deprecated
+
+  on main.tf line 7, in resource "kubernetes_service" "ghost_service":
+   7:       app = "${kubernetes_deployment.ghost_deployment.spec.0.template.0.metadata.0.labels.app}"
+
+Terraform 0.11 and earlier required all non-constant expressions to be
+provided via interpolation syntax, but this pattern is now deprecated. To
+silence this warning, remove the "${ sequence from the start and the }"
+sequence from the end of this expression, leaving just the inner expression.
+
+Template interpolation syntax is still used to construct strings from
+expressions when the template includes multiple interpolation sequences or a
+mixture of literal strings and interpolations. This deprecation applies only
+to templates that consist entirely of a single interpolation sequence.
+
+
+Error: Unsupported block type
+
+  on main.tf line 6, in resource "kubernetes_service" "ghost_service":
+   6:     selector {
+
+Blocks of type "selector" are not expected here. Did you mean to define
+argument "selector"? If so, use the equals sign to assign it a value.
+
+
+Error: Unsupported block type
+
+  on main.tf line 28, in resource "kubernetes_deployment" "ghost_deployment":
+  28:       match_labels {
+
+Blocks of type "match_labels" are not expected here. Did you mean to define
+argument "match_labels"? If so, use the equals sign to assign it a value.
+
+
+Error: Unsupported block type
+
+  on main.tf line 35, in resource "kubernetes_deployment" "ghost_deployment":
+  35:         labels {
+
+Blocks of type "labels" are not expected here. Did you mean to define argument
+"labels"? If so, use the equals sign to assign it a value.
+
+master $ terraform 0.12upgrade
+
+This command will rewrite the configuration files in the given directory so
+that they use the new syntax features from Terraform v0.12, and will identify
+any constructs that may need to be adjusted for correct operation with
+Terraform v0.12.
+
+We recommend using this command in a clean version control work tree, so that
+you can easily see the proposed changes as a diff against the latest commit.
+If you have uncommited changes already present, we recommend aborting this
+command and dealing with them before running this command again.
+
+Would you like to upgrade the module in the current directory?
+  Only 'yes' will be accepted to confirm.
+
+  Enter a value: yes
+
+-----------------------------------------------------------------------------
+
+Upgrade complete!
+
+The configuration files were upgraded successfully. Use your version control
+system to review the proposed changes, make any necessary adjustments, and
+then commit.
+
+master $ terraform plan
+Refreshing Terraform state in-memory prior to plan...
+The refreshed state will be used to calculate this plan, but will not be
+persisted to local or remote state storage.
+
+
+------------------------------------------------------------------------
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # kubernetes_deployment.ghost_deployment will be created
+  + resource "kubernetes_deployment" "ghost_deployment" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "ghost-blog"
+          + namespace        = "default"
+          + resource_version = (known after apply)
+          + self_link        = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + min_ready_seconds         = 0
+          + paused                    = false
+          + progress_deadline_seconds = 600
+          + replicas                  = 1
+          + revision_history_limit    = 10
+
+          + selector {
+              + match_labels = {
+                  + "app" = "ghost-blog"
+                }
+            }
+
+          + strategy {
+              + type = (known after apply)
+
+              + rolling_update {
+                  + max_surge       = (known after apply)
+                  + max_unavailable = (known after apply)
+                }
+            }
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + labels           = {
+                      + "app" = "ghost-blog"
+                    }
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + self_link        = (known after apply)
+                  + uid              = (known after apply)
+                }
+
+              + spec {
+                  + dns_policy                       = "ClusterFirst"
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + restart_policy                   = "Always"
+                  + service_account_name             = (known after apply)
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + image                    = "ghost:alpine"
+                      + image_pull_policy        = (known after apply)
+                      + name                     = "ghost"
+                      + stdin                    = false
+                      + stdin_once               = false
+                      + termination_message_path = "/dev/termination-log"
+                      + tty                      = false
+
+                      + port {
+                          + container_port = 2368
+                          + protocol       = "TCP"
+                        }
+
+                      + resources {
+                          + limits {
+                              + cpu    = (known after apply)
+                              + memory = (known after apply)
+                            }
+
+                          + requests {
+                              + cpu    = (known after apply)
+                              + memory = (known after apply)
+                            }
+                        }
+
+                      + volume_mount {
+                          + mount_path        = (known after apply)
+                          + mount_propagation = (known after apply)
+                          + name              = (known after apply)
+                          + read_only         = (known after apply)
+                          + sub_path          = (known after apply)
+                        }
+                    }
+
+                  + image_pull_secrets {
+                      + name = (known after apply)
+                    }
+
+                  + volume {
+                      + name = (known after apply)
+
+                      + aws_elastic_block_store {
+                          + fs_type   = (known after apply)
+                          + partition = (known after apply)
+                          + read_only = (known after apply)
+                          + volume_id = (known after apply)
+                        }
+
+                      + azure_disk {
+                          + caching_mode  = (known after apply)
+                          + data_disk_uri = (known after apply)
+                          + disk_name     = (known after apply)
+                          + fs_type       = (known after apply)
+                          + read_only     = (known after apply)
+                        }
+
+                      + azure_file {
+                          + read_only   = (known after apply)
+                          + secret_name = (known after apply)
+                          + share_name  = (known after apply)
+                        }
+
+                      + ceph_fs {
+                          + monitors    = (known after apply)
+                          + path        = (known after apply)
+                          + read_only   = (known after apply)
+                          + secret_file = (known after apply)
+                          + user        = (known after apply)
+
+                          + secret_ref {
+                              + name = (known after apply)
+                            }
+                        }
+
+                      + cinder {
+                          + fs_type   = (known after apply)
+                          + read_only = (known after apply)
+                          + volume_id = (known after apply)
+                        }
+
+                      + config_map {
+                          + default_mode = (known after apply)
+                          + name         = (known after apply)
+
+                          + items {
+                              + key  = (known after apply)
+                              + mode = (known after apply)
+                              + path = (known after apply)
+                            }
+                        }
+
+                      + downward_api {
+                          + default_mode = (known after apply)
+
+                          + items {
+                              + mode = (known after apply)
+                              + path = (known after apply)
+
+                              + field_ref {
+                                  + api_version = (known after apply)
+                                  + field_path  = (known after apply)
+                                }
+
+                              + resource_field_ref {
+                                  + container_name = (known after apply)
+                                  + quantity       = (known after apply)
+                                  + resource       = (known after apply)
+                                }
+                            }
+                        }
+
+                      + empty_dir {
+                          + medium = (known after apply)
+                        }
+
+                      + fc {
+                          + fs_type      = (known after apply)
+                          + lun          = (known after apply)
+                          + read_only    = (known after apply)
+                          + target_ww_ns = (known after apply)
+                        }
+
+                      + flex_volume {
+                          + driver    = (known after apply)
+                          + fs_type   = (known after apply)
+                          + options   = (known after apply)
+                          + read_only = (known after apply)
+
+                          + secret_ref {
+                              + name = (known after apply)
+                            }
+                        }
+
+                      + flocker {
+                          + dataset_name = (known after apply)
+                          + dataset_uuid = (known after apply)
+                        }
+
+                      + gce_persistent_disk {
+                          + fs_type   = (known after apply)
+                          + partition = (known after apply)
+                          + pd_name   = (known after apply)
+                          + read_only = (known after apply)
+                        }
+
+                      + git_repo {
+                          + directory  = (known after apply)
+                          + repository = (known after apply)
+                          + revision   = (known after apply)
+                        }
+
+                      + glusterfs {
+                          + endpoints_name = (known after apply)
+                          + path           = (known after apply)
+                          + read_only      = (known after apply)
+                        }
+
+                      + host_path {
+                          + path = (known after apply)
+                          + type = (known after apply)
+                        }
+
+                      + iscsi {
+                          + fs_type         = (known after apply)
+                          + iqn             = (known after apply)
+                          + iscsi_interface = (known after apply)
+                          + lun             = (known after apply)
+                          + read_only       = (known after apply)
+                          + target_portal   = (known after apply)
+                        }
+
+                      + local {
+                          + path = (known after apply)
+                        }
+
+                      + nfs {
+                          + path      = (known after apply)
+                          + read_only = (known after apply)
+                          + server    = (known after apply)
+                        }
+
+                      + persistent_volume_claim {
+                          + claim_name = (known after apply)
+                          + read_only  = (known after apply)
+                        }
+
+                      + photon_persistent_disk {
+                          + fs_type = (known after apply)
+                          + pd_id   = (known after apply)
+                        }
+
+                      + quobyte {
+                          + group     = (known after apply)
+                          + read_only = (known after apply)
+                          + registry  = (known after apply)
+                          + user      = (known after apply)
+                          + volume    = (known after apply)
+                        }
+
+                      + rbd {
+                          + ceph_monitors = (known after apply)
+                          + fs_type       = (known after apply)
+                          + keyring       = (known after apply)
+                          + rados_user    = (known after apply)
+                          + rbd_image     = (known after apply)
+                          + rbd_pool      = (known after apply)
+                          + read_only     = (known after apply)
+
+                          + secret_ref {
+                              + name = (known after apply)
+                            }
+                        }
+
+                      + secret {
+                          + default_mode = (known after apply)
+                          + optional     = (known after apply)
+                          + secret_name  = (known after apply)
+
+                          + items {
+                              + key  = (known after apply)
+                              + mode = (known after apply)
+                              + path = (known after apply)
+                            }
+                        }
+
+                      + vsphere_volume {
+                          + fs_type     = (known after apply)
+                          + volume_path = (known after apply)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+  # kubernetes_service.ghost_service will be created
+  + resource "kubernetes_service" "ghost_service" {
+      + id                    = (known after apply)
+      + load_balancer_ingress = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "ghost-service"
+          + namespace        = "default"
+          + resource_version = (known after apply)
+          + self_link        = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + cluster_ip                  = (known after apply)
+          + external_traffic_policy     = (known after apply)
+          + publish_not_ready_addresses = false
+          + selector                    = {
+              + "app" = "ghost-blog"
+            }
+          + session_affinity            = "None"
+          + type                        = "NodePort"
+
+          + port {
+              + node_port   = 8080
+              + port        = 2368
+              + protocol    = "TCP"
+              + target_port = "2368"
+            }
+        }
+    }
+
+Plan: 2 to add, 0 to change, 0 to destroy.
+
+------------------------------------------------------------------------
+
+Note: You didn't specify an "-out" parameter to save this plan, so Terraform
+can't guarantee that exactly these actions will be performed if
+"terraform apply" is subsequently run.
+
+master $ terraform apply -auto-approve
+kubernetes_deployment.ghost_deployment: Creating...
+kubernetes_deployment.ghost_deployment: Creation complete after 4s [id=default/ghost-blog]
+kubernetes_service.ghost_service: Creating...
+
+Error: Service "ghost-service" is invalid: spec.ports[0].nodePort: Invalid value: 8080: provided port is not in the valid range. The range of valid ports is 30000-32767
+
+  on main.tf line 1, in resource "kubernetes_service" "ghost_service":
+   1: resource "kubernetes_service" "ghost_service" {
+
+
+master $ vi main.tf
+master $ terraform apply -auto-approve
+kubernetes_deployment.ghost_deployment: Refreshing state... [id=default/ghost-blog]
+kubernetes_service.ghost_service: Creating...
+kubernetes_service.ghost_service: Creation complete after 0s [id=default/ghost-service]
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+master $ kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+ghost-blog-7685857bd7-tgm5q   1/1     Running   0          77s
+master $ kubectl delete pod ghost-blog-7685857bd7-tgm5q
+pod "ghost-blog-7685857bd7-tgm5q" deleted
+master $ kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+ghost-blog-7685857bd7-4l697   1/1     Running   0          13s
+master $ kubectl get pods -n namespace-name pod-name -o yaml | grep uid
+Error from server (NotFound): namespaces "namespace-name" not found
+master $ kubectl describe ghost-blog-7685857bd7-tgm5q
+error: the server doesn't have a resource type "ghost-blog-7685857bd7-tgm5q"
+master $ kubectl describe pod
+Name:               ghost-blog-7685857bd7-4l697
+Namespace:          default
+Priority:           0
+PriorityClassName:  <none>
+Node:               node01/172.17.0.48
+Start Time:         Fri, 20 Dec 2019 11:00:51 +0000
+Labels:             app=ghost-blog
+                    pod-template-hash=7685857bd7
+Annotations:        <none>
+Status:             Running
+IP:                 10.32.0.2
+Controlled By:      ReplicaSet/ghost-blog-7685857bd7
+Containers:
+  ghost:
+    Container ID:   docker://f03d5f0d927eb83d4ce4a32a21ee2824596c881c6d80ab79500fd55d0b23d63e
+    Image:          ghost:alpine
+    Image ID:       docker-pullable://ghost@sha256:1516aee932ca601120ffb0a5c2f185f49ca1f6cdf9155040a0372095dafce81d
+    Port:           2368/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Fri, 20 Dec 2019 11:00:52 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:         <none>
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:            <none>
+QoS Class:          BestEffort
+Node-Selectors:     <none>
+Tolerations:        node.kubernetes.io/not-ready:NoExecute for 300s
+                    node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age    From               Message
+  ----    ------     ----   ----               -------
+  Normal  Pulled     6m59s  kubelet, node01    Container image "ghost:alpine" already present on machine
+  Normal  Created    6m59s  kubelet, node01    Created container ghost
+  Normal  Scheduled  6m59s  default-scheduler  Successfully assigned default/ghost-blog-7685857bd7-4l697 to node01
+  Normal  Started    6m59s  kubelet, node01    Started container ghost
+master $ kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+ghost-blog-7685857bd7-4l697   1/1     Running   0          8m28s
+master $
