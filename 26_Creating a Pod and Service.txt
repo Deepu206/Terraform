@@ -35,7 +35,7 @@ resource "kubernetes_pod" "ghost_alpine" {
     }
   }
 
-  spec {
+spec {
     container {
       image = "ghost:alpine"
       name  = "ghost-alpine"
